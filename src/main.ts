@@ -1,3 +1,11 @@
+import {
+  createGameGrid,
+  GAME_HEIGHT,
+  GAME_WIDTH,
+  randomizeGameGrid,
+  stepGameGrid,
+} from "./game";
+import { setupGrid, updateCell } from "./grid";
 import "./style.css";
 
 // More complicated ruleset:
@@ -32,16 +40,53 @@ document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
   </div>
 `;
 
+function updateGridDisplay() {
+  gameGrid.forEach((row, x) => {
+    row.forEach((alive, y) => {
+      updateCell(x, y, alive);
+    });
+  });
+}
+
 function handleStep() {
-  console.log("Step");
+  gameGrid = stepGameGrid(gameGrid);
+  updateGridDisplay();
+}
+
+const STEP_INTERVAL = 200;
+let timeoutId = -1;
+
+function updateButtonStates() {
+  const stepButton = document.querySelector<HTMLButtonElement>("#step")!;
+  const runButton = document.querySelector<HTMLButtonElement>("#run")!;
+  const stopButton = document.querySelector<HTMLButtonElement>("#stop")!;
+  stepButton.disabled = timeoutId !== -1;
+  runButton.disabled = timeoutId !== -1;
+  stopButton.disabled = timeoutId === -1;
+}
+
+function handleRunStep() {
+  handleStep();
+  if (timeoutId !== -1) {
+    timeoutId = window.setTimeout(handleRunStep, STEP_INTERVAL);
+  }
 }
 
 function handleRun() {
-  console.log("Run");
+  if (timeoutId !== -1) {
+    return;
+  }
+  timeoutId = window.setTimeout(handleRunStep, STEP_INTERVAL);
+  updateButtonStates();
 }
 
 function handleStop() {
-  console.log("Stop");
+  if (timeoutId === -1) {
+    return;
+  }
+  window.clearTimeout(timeoutId);
+  timeoutId = -1;
+  updateButtonStates();
 }
 
 document
@@ -55,3 +100,11 @@ document
 document
   .querySelector<HTMLButtonElement>("#stop")!
   .addEventListener("click", handleStop);
+
+const grid = document.querySelector<HTMLDivElement>("#grid")!;
+setupGrid(grid, GAME_WIDTH, GAME_HEIGHT);
+
+let gameGrid = createGameGrid();
+randomizeGameGrid(gameGrid);
+updateGridDisplay();
+updateButtonStates();
