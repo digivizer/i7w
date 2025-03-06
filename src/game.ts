@@ -1,16 +1,8 @@
-export const GAME_WIDTH = 20;
-export const GAME_HEIGHT = 20;
+export const GAME_WIDTH = 40;
+export const GAME_HEIGHT = 40;
 
 type GameRow = boolean[];
 export type GameGrid = GameRow[];
-
-// More complicated ruleset:
-// * let the weighted value of a neighbour be 0 if it is dead, and
-//   1 / (2^x distance + 2^y distance) if it is alive.
-// * cells stay alive if they have a weited sum of neighbours of at least 4
-//   but no more than 7.
-// * dead cells become alive if they have a weighted sum of neighbours of
-//   less than 3.
 
 export function createGameGrid(): GameGrid {
   const result: GameGrid = [];
@@ -47,7 +39,7 @@ function calculateWeightedSum(grid: GameGrid, x: number, y: number) {
       }
       const dx = Math.abs(x - nx);
       const dy = Math.abs(y - ny);
-      sum += 1 / (2 ** dx + 2 ** dy);
+      sum += 1 / (2 ** dx * 2 ** dy);
     }
   }
   return sum;
@@ -60,9 +52,9 @@ export function stepGameGrid(grid: GameGrid) {
       const alive = grid[x][y];
       const weightedSum = calculateWeightedSum(grid, x, y);
       if (alive) {
-        newGrid[x][y] = weightedSum >= 4 && weightedSum <= 7;
+        newGrid[x][y] = weightedSum >= 4 && weightedSum <= 6;
       } else {
-        newGrid[x][y] = weightedSum < 3;
+        newGrid[x][y] = weightedSum < 2;
       }
     }
   }
