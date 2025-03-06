@@ -7,10 +7,10 @@ export type GameGrid = GameRow[];
 // More complicated ruleset:
 // * let the weighted value of a neighbour be 0 if it is dead, and
 //   1 / (2^x distance + 2^y distance) if it is alive.
-// * cells stay alive if they have a weited sum of neighbours of at least 1.5
-//   but no more than 10.
+// * cells stay alive if they have a weited sum of neighbours of at least 4
+//   but no more than 7.
 // * dead cells become alive if they have a weighted sum of neighbours of
-//   at least 4 but no more than 6.
+//   less than 3.
 
 export function createGameGrid(): GameGrid {
   const result: GameGrid = [];
