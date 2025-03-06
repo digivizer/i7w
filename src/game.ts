@@ -1,8 +1,16 @@
-export const GAME_WIDTH = 200;
-export const GAME_HEIGHT = 200;
+export const GAME_WIDTH = 20;
+export const GAME_HEIGHT = 20;
 
 type GameRow = boolean[];
 export type GameGrid = GameRow[];
+
+// More complicated ruleset:
+// * let the weighted value of a neighbour be 0 if it is dead, and
+//   1 / (2^x distance + 2^y distance) if it is alive.
+// * cells stay alive if they have a weited sum of neighbours of at least 1.5
+//   but no more than 10.
+// * dead cells become alive if they have a weighted sum of neighbours of
+//   at least 4 but no more than 6.
 
 export function createGameGrid(): GameGrid {
   const result: GameGrid = [];
@@ -24,24 +32,25 @@ export function randomizeGameGrid(grid: GameGrid) {
   }
 }
 
-function countNeighbors(grid: GameGrid, x: number, y: number) {
-  let count = 0;
-  for (let dx = -1; dx <= 1; dx++) {
-    for (let dy = -1; dy <= 1; dy++) {
-      if (dx === 0 && dy === 0) {
+function calculateWeightedSum(grid: GameGrid, x: number, y: number) {
+  let sum = 0;
+  for (let nx = 0; nx <= GAME_WIDTH; nx++) {
+    for (let ny = 0; ny <= GAME_HEIGHT; ny++) {
+      if (x === nx && y === ny) {
         continue;
       }
-      const nx = x + dx;
-      const ny = y + dy;
       if (nx < 0 || nx >= GAME_WIDTH || ny < 0 || ny >= GAME_HEIGHT) {
         continue;
       }
-      if (grid[nx][ny]) {
-        count++;
+      if (!grid[nx][ny]) {
+        continue;
       }
+      const dx = Math.abs(x - nx);
+      const dy = Math.abs(y - ny);
+      sum += 1 / (2 ** dx + 2 ** dy);
     }
   }
-  return count;
+  return sum;
 }
 
 export function stepGameGrid(grid: GameGrid) {
@@ -49,11 +58,11 @@ export function stepGameGrid(grid: GameGrid) {
   for (let x = 0; x < GAME_WIDTH; x++) {
     for (let y = 0; y < GAME_HEIGHT; y++) {
       const alive = grid[x][y];
-      const neighbors = countNeighbors(grid, x, y);
+      const weightedSum = calculateWeightedSum(grid, x, y);
       if (alive) {
-        newGrid[x][y] = neighbors === 2 || neighbors === 3;
+        newGrid[x][y] = weightedSum >= 4 && weightedSum <= 7;
       } else {
-        newGrid[x][y] = neighbors === 3;
+        newGrid[x][y] = weightedSum < 3;
       }
     }
   }
