@@ -1,22 +1,26 @@
 import "./style.css";
 
+// More complicated ruleset:
+// * let the weighted value of a neighbour be 0 if it is dead, and
+//   1 / (2^x distance + 2^y distance) if it is alive.
+// * cells stay alive if they have a weited sum of neighbours of at least 4
+//   but no more than 7.
+// * dead cells become alive if they have a weighted sum of neighbours of
+//   less than 3.
+
 document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
   <div>
-    <h1>Conway's game of life</h1>
-    <p>Conway came up with this cool "game" which is kind of a simulation
-    of very very simple life. In the game, there is a grid of cells, each
-    of which can be either alive or dead. The game progresses in turns,
-    and in each turn, the state of each cell in the grid is updated
-    according to a set of rules. The rules are as follows:</p>
+    <h1>Conway's game of life - more complicated version</h1>
+    <p>This version has more complicated rules. The rules are as follows:</p>
     <ul>
-      <li>Any live cell with fewer than two live neighbours dies, as if by
-      underpopulation.</li>
-      <li>Any live cell with two or three live neighbours lives on to the next
-      generation.</li>
-      <li>Any live cell with more than three live neighbours dies, as if by
-      overpopulation.</li>
-      <li>Any dead cell with exactly three live neighbours becomes a live cell,
-      as if by reproduction.</li>
+      <li>Neighbour cells have a weighted value of 0 if they are dead, and
+      1 / (2^x distance * 2^y distance) if they are alive.</li>
+      <li>The weighted neighbour sum of a cell is the sum of the weighted
+      values of its neighbours.</li>
+      <li>Any live cell with a weighted neighbour sum of between 4 and 6 lives
+      on to the next generation, otherwise they die.</li>
+      <li>Any dead cell with a weighted neighour sum of less than 2 becomes
+      alive in the next generation.</li>
     </ul>
     <p>Let's implement it!</p>
     <div>
