@@ -1,3 +1,4 @@
+import { setupGrid } from "./grid";
 import "./style.css";
 
 document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
@@ -51,3 +52,6 @@ document
 document
   .querySelector<HTMLButtonElement>("#stop")!
   .addEventListener("click", handleStop);
+
+const grid = document.querySelector<HTMLDivElement>("#grid")!;
+setupGrid(grid, 10, 10);
