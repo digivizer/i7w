@@ -1,13 +1,5 @@
 import "./style.css";
 
-// More complicated ruleset:
-// * let the weighted value of a neighbour be 0 if it is dead, and
-//   1 / (2^x distance + 2^y distance) if it is alive.
-// * cells stay alive if they have a weited sum of neighbours of at least 4
-//   but no more than 7.
-// * dead cells become alive if they have a weighted sum of neighbours of
-//   less than 3.
-
 document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
   <div>
     <h1>Conway's game of life - more complicated version</h1>
