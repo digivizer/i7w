@@ -7,7 +7,7 @@ for each cell, which is a child of the grid div element and with gridColumnStart
 and gridRowStart set to position it correctly in the grid.
 
 See https://developer.mozilla.org/en-US/docs/Web/CSS/grid-column-start and
-https://developer.mozilla.org/en-US/docs/Web/CSS/grid-column-end for
+https://developer.mozilla.org/en-US/docs/Web/CSS/grid-row-start for
 documentation on the styles needed.
 
 To do this:
